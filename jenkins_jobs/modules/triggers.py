@@ -1103,7 +1103,7 @@ def gitlab(parser, xml_parent, data):
         ('add-ci-message', 'addCiMessage', False),
         ('allow-all-branches', 'allowAllBranches', False),
     )
-    
+
     list_mapping = (
         ('target-branch-regex', 'targetBranchRegex', []),
         ('include-branches', 'includeBranchesSpec', []),
@@ -1116,24 +1116,23 @@ def gitlab(parser, xml_parent, data):
         value = str(data.get(yaml_name, default_val)).lower()
         _add_xml(gitlab, xml_name, value)
 
-    supported_thresholds = ['ALL', 'REGEXBASEDFILTER', 'NAMEBASEDFILTER']
     result_dict = {'all': 'ALL',
                    'regex': 'REGEXBASEDFILTER',
                    'name': 'NAMEBASEDFILTER'}
-    #for yaml_name, xml_name, default_val in filter_mapping:
+
     filter_branch = data.get('branch-filter-type')
     if filter_branch:
-        #if filter_branch not in supported_thresholds:
         if filter_branch not in result_dict:
             raise jenkins_jobs.errors.JenkinsJobsException(
                 "Choice should be one of the following options: %s." %
                 ", ".join(result_dict))
-        XML.SubElement(gitlab, 'branchFilterType').text = result_dict[filter_branch].lower()
-       
+        XML.SubElement(gitlab, 'branchFilterType').text = \
+            result_dict[filter_branch].lower()
+
     for yaml_name, xml_name, default_val in list_mapping:
         value = ', '.join(data.get(yaml_name, default_val))
         if value.strip():
-           _add_xml(gitlab, xml_name, value)
+            _add_xml(gitlab, xml_name, value)
 
 
 def build_result(parser, xml_parent, data):
